@@ -22,15 +22,15 @@
                     inherit: ContainerInherit, ObjectInherit
                     propagation: 'None'
 
-           - name: Add program files allow rights
-             win_acl:
-                     path: "{{ item }}"
-                     user: svc_marte_user
-                     rights: FullControl
-                     type: allow
-                     state: present
-                     inherit: ContainerInherit, ObjectInherit
-                     propagation: 'None'
-             with_items:
-                   - C:\Program Files
-                   - C:\Program Files (x86)
+          - name: Add program files allow rights
+            win_acl:
+                    path: "{{ item }}"
+                    user: svc_marte_user
+                    rights: FullControl
+                    type: allow
+                    state: present
+                    inherit: ContainerInherit, ObjectInherit
+                    propagation: 'None'
+            with_items:
+                  - C:\Program Files
+                  - C:\Program Files (x86)

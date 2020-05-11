@@ -37,6 +37,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     wsl sudo apt update
     wsl sudo apt install -y ansible
+    wsl sudo apt install -y unzip
     wsl sudo bash -c "echo [self] >> /etc/ansible/hosts"
     wsl sudo bash -c "echo 127.0.0.1 >> /etc/ansible/hosts"
     wsl sudo bash -c "echo [self:vars] >> /etc/ansible/hosts"
@@ -46,5 +47,10 @@ Vagrant.configure("2") do |config|
     wsl sudo bash -c "echo ansible_user=vagrant >> /etc/ansible/hosts"
     wsl sudo bash -c "echo ansible_password=vagrant >> /etc/ansible/hosts"
     wsl ansible self -m win_ping
+    wsl wget https://github.com/j0rdan-m/vagrant_wsl_ansible/archive/master.zip
+    wsl unzip master.zip
+    wsl ansible-playbook vagrant_wsl_ansible-master/tools.yml
+    wsl ansible-playbook vagrant_wsl_ansible-master/iis.yml
+    wsl ansible-playbook vagrant_wsl_ansible-master/users.yml
   SHELL
 end

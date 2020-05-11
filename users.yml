@@ -32,5 +32,5 @@
                      inherit: ContainerInherit, ObjectInherit
                      propagation: 'None'
              with_items:
-                     - C:\Program Files
-                     - C:\Program Files (x86)
+                   - C:\Program Files
+                   - C:\Program Files (x86)

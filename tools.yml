@@ -1,0 +1,19 @@
+---
+- name: Install Applications
+  hosts: all
+  tasks:     
+          - name: Install Git
+            win_chocolatey:
+                    name: git
+                    state: present
+
+          - name: Instal VsCode
+            win_chocolatey:
+                    name: vscode
+                    state: present
+
+          - name: Install SumatraPDF
+            win_chocolatey:
+                    name: sumatrapdf
+                    state: latest
+

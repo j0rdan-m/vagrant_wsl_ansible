@@ -5,7 +5,7 @@
           - name: Create service user
             win_user:
                     name: svc_marte_user
-                    password: svc_p@ssw0rd
+                    password: p@ssw0rd!
                     state: present
                     groups:
                             - Users

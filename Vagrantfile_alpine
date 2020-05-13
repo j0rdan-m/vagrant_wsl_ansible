@@ -1,0 +1,46 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "mcree/win2019"
+  config.vm.box_version = "1.0.1584095692"
+
+  config.vm.provider "virtualbox" do |v|
+    v.name = "windows2019"
+    v.memory = "2048"
+  end
+
+  config.vm.provider "virtualbox" do |v|
+    v.name = "win2k19"
+    v.memory = "2048"
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+  
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    Enable-WindowsOptionalFeature -FeatureName Microsoft-Windows-Subsystem-Linux -Online -NoRestart -WarningAction SilentlyContinue
+  SHELL
+  
+  # trigger reload
+  config.vm.provision :reload
+
+  # execute code after reload
+  config.vm.provision "shell", inline: <<-SHELL
+    choco install wsl-alpine -y
+    wsl apk --update add build-base libffi-dev openssl-dev python-dev py-pip unzip
+    wsl pip install pywinrm
+    wsl pip install ansible
+    wsl touch /usr/hosts
+    wsl ash -c "echo [self] >> /usr/hosts"
+    wsl ash -c "echo 127.0.0.1 >> /usr/hosts"
+    wsl ash -c "echo [self:vars] >> /usr/hosts"
+    wsl ash -c "echo ansible_port=5985 >> /usr/hosts"
+    wsl ash -c "echo ansible_connection=winrm >> /usr/hosts"
+    wsl ash -c "echo ansible_winrm_transport=basic >> /usr/hosts"
+    wsl ash -c "echo ansible_user=vagrant >> /usr/hosts"
+    wsl ash -c "echo ansible_password=vagrant >> /usr/hosts"
+    wsl wget https://github.com/j0rdan-m/vagrant_wsl_ansible/archive/master.zip
+    wsl unzip master.zip
+    wsl ansible-playbook -i /usr/hosts vagrant_wsl_ansible-master/tools.yml
+    wsl ansible-playbook -i /usr/hosts vagrant_wsl_ansible-master/iis.yml
+    wsl ansible-playbook -i /usr/hosts vagrant_wsl_ansible-master/users.yml
+  SHELL
+end
